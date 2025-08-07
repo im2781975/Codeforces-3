@@ -181,6 +181,59 @@ int main() {
     cout << endl;
     return 0;
 }
+using namespace std;
+int main(){
+	int d, sum, minSum, maxSum;
+	scanf("%d%d", &d, &sum);
+	pair<int, int> a[d];
+	int ret[d];
+	for (int i = 0; i < d; i++){
+		scanf("%d%d", &a[i].first, &a[i].second);
+		minSum += a[i].first;
+		maxSum += a[i].second;
+		ret[i] = a[i].first;
+	}
+	if (sum < minSum || sum > maxSum){
+		cout << "NO";
+		return 0;
+	}
+	int x = sum - minSum, i = 0;
+	cout << "YES\n";
+	while (x){
+		int temp = min(a[i].second - a[i].first, x);
+		x -= temp;
+		ret[i++] += temp;
+	}
+	for (int j : ret)
+		cout << j << ' ';
+}
+using namespace std;
+int main() {
+    int d, sum; cin >> d >> sum;
+    vector <pair<int, int>> a(d);
+    vector <int> ret(d);
+    int minSum = 0, maxSum = 0;
+    for (int i = 0; i < d; i++) {
+        cin >> a[i].first >> a[i].second;
+        minSum += a[i].first;
+        maxSum += a[i].second;
+        ret[i] = a[i].first;
+    }
+    if (sum < minSum || sum > maxSum) {
+        cout << "NO\n";
+        return 0;
+    }
+    int x = sum - minSum;
+    cout << "YES\n";
+    for (int i = 0; i < d && x > 0; i++) {
+        int add = min(a[i].second - a[i].first, x);
+        ret[i] += add;
+        x -= add;
+    }
+    for (int val : ret)
+        cout << val << ' ';
+    cout << '\n';
+}
 
 https://codeforces.com/problemset/problem/6/A
 // A. Triangle
@@ -430,9 +483,51 @@ int main(){
     cout << x << " " << y;
     return 0;
 }
-#include <iostream>
-#include <vector>
-#include <string>
+https://codeforces.com/problemset/problem/14/A
+// A. Letter
+using namespace std;
+int main(){
+	int n, m; cin >> n >> m;
+	int x1 = 50, y1 = 50, x2 = 0, y2 = 0;
+	string s[n];
+	for (int i = 0; i < n; i++) cin >> s[i];
+	for (int i = 0; i < n; i++)
+		for (int j = 0; j < m; j++)
+			if (s[i][j] == '*'){
+				x1 = min(x1, i);
+				y1 = min(y1, j);
+				x2 = max(x2, i);
+				y2 = max(y2, j);
+			}
+	for (int i = x1; i <= x2; i++){
+		for (int j = y1; j <= y2; j++)
+			cout << s[i][j];
+		cout << '\n';
+	}
+}
+using namespace std;
+int main() {
+    int n, m; cin >> n >> m;
+    vector<string> grid(n);
+    for (int i = 0; i < n; ++i)
+        cin >> grid[i];
+    int x1 = n, y1 = m, x2 = -1, y2 = -1;
+    for (int i = 0; i < n; ++i) {
+        for (int j = 0; j < m; ++j) {
+            if (grid[i][j] == '*') {
+                x1 = min(x1, i);
+                y1 = min(y1, j);
+                x2 = max(x2, i);
+                y2 = max(y2, j);
+            }
+        }
+    }
+    for (int i = x1; i <= x2; ++i) {
+        for (int j = y1; j <= y2; ++j)
+            cout << grid[i][j];
+        cout << '\n';
+    }
+}
 https://codeforces.com/problemset/problem/16/A
 // A. Flag
 using namespace std;
@@ -454,6 +549,80 @@ int main() {
         prevRow = row;
     }
     cout << (valid ? "YES" : "NO") << endl;
+}
+using namespace std;
+int main(){
+	int n, m; cin >> n >> m;
+	string a[n];
+	for (int i = 0; i < n; i++)
+		cin >> a[i];
+	for (int i = 0; i < n; i++){
+		if (a[i][0] == a[i + 1][0]){
+			cout << "NO";
+			return 0;
+		}
+		for (int j = 0; j < m - 1; j++)
+			if (a[i][j] != a[i][j + 1]){
+				cout << "NO";
+				return 0;
+			}
+	}
+	cout << "YES";
+}
+using namespace std;
+int main() {
+    int n, m; cin >> n >> m;
+    vector <string> a(n);
+    for (int i = 0; i < n; i++)
+        cin >> a[i];
+    for (int i = 0; i < n; i++) {
+        for (int j = 0; j < m - 1; j++) {
+            if (a[i][j] != a[i][j + 1]) {
+                cout << "NO\n";
+                return 0;
+            }
+        }
+        if (i > 0 && a[i][0] == a[i - 1][0]) {
+            cout << "NO\n";
+            return 0;
+        }
+    }
+    cout << "YES\n";
+}
+https://codeforces.com/problemset/problem/16/B
+// B. Burglar and Matches
+using namespace std;
+int main(){
+	int n, m, c = 0; cin >> n >> m;
+	pair <int, int> p[m];
+	for (int i = 0; i < m; i++)
+		cin >> p[i].second >> p[i].first;
+	sort(p, p + m, greater <pair <int, int>>());
+	for (int i = 0; i < m && n > 0; i++){
+		c += min(n, p[i].second) * p[i].first;
+		n -= min(n, p[i].second);
+	}
+	cout << c;
+}
+using namespace std;
+int main() {
+    int n, m; cin >> n >> m;
+    vector <pair <int, int>> matches(m);
+    for (int i = 0; i < m; i++) {
+        int boxes, price;
+        cin >> boxes >> price;
+        matches[i] = {price, boxes};
+    }
+    sort(matches.begin(), matches.end(), greater <pair <int, int>>());
+    int totalValue = 0;
+    for (auto &p : matches) {
+        if (n == 0) break;
+        int take = min(n, p.second);
+        totalValue += take * p.first;
+        n -= take;
+    }
+    cout << totalValue << "\n";
+    return 0;
 }
 
 #include <cstdio>
@@ -490,6 +659,31 @@ int main() {
         }
     }
     cout << (second_val != -1) ? second_val : "NO";
+    return 0;
+}
+using namespace std;
+int main(){
+	int n, x; cin >> n;
+	set <int> st;
+	for (int i = 0; i < n; i++){
+		cin >> x;
+		st.insert(x);
+	}
+	cout << (st.size() > 1 ? to_string(*++st.begin()) : "NO");
+}
+using namespace std;
+int main() {
+    int n, x; cin >> n;
+    set<int> st;
+    for (int i = 0; i < n; i++) {
+        cin >> x;
+        st.insert(x);
+    }
+    if (st.size() > 1) {
+        auto it = st.begin();
+        ++it;
+        cout << *it << '\n';
+    } else cout << "NO\n";
     return 0;
 }
 https://codeforces.com/problemset/problem/23/A
@@ -588,6 +782,25 @@ int main(){
     }
     cout << (even > 0 ? lastodd : lasteven) << endl;
 }
+using namespace std;
+int main() {
+    int n; cin >> n;
+    vector<int> a(n);
+    int numberOfOdds = 0, numberOfEvens = 0;
+    for (int i = 0; i < n; i++) {
+        cin >> a[i];
+        if (a[i] % 2 != 0) numberOfOdds++;
+        else numberOfEvens++;
+    }
+    int targetParity = (numberOfOdds > numberOfEvens) ? 0 : 1;
+    for (int i = 0; i < n; i++) {
+        if (a[i] % 2 == targetParity) {
+            cout << (i + 1) << '\n';
+            break;
+        }
+    }
+}
+
 https://codeforces.com/problemset/problem/26/A
 // A. Almost Prime
 using namespace std;
@@ -780,6 +993,49 @@ int main() {
     }
     cout << result;
 }
+using namespace std;
+int main(){
+    string input; cin >> input;
+    int len = input.length();
+    char ans[len];
+    int c = 0;
+    for (int i = 0; i < len; i++){
+        if (input[i] == '-'){
+            if (input[i + 1] == '-'){
+                ans[c] = '2';
+                i++; c++;
+                c++;
+            else {
+                ans[c] = '1';
+                i++; c++;
+            }
+        }
+        else {
+            ans[c] = '0'; c++;
+        }
+    }
+    for (int i = 0; i < c; i++)
+        cout << ans[i];
+    return 0;
+}
+using namespace std;
+int main() {
+    string input; cin >> input;
+    string ans;
+    for (size_t i = 0; i < input.length(); i++) {
+        if (input[i] == '-') {
+            if (i + 1 < input.length() && input[i + 1] == '-') {
+                ans.push_back('2');
+                i++;
+            } else {
+                ans.push_back('1');
+                i++;
+            }
+        } else ans.push_back('0');
+    }
+    cout << ans;
+}
+
 https://codeforces.com/problemset/problem/34/A
 // A. Reconnaissance 2
 using namespace std;
@@ -955,6 +1211,30 @@ int main(){
     (str == ing) ? cout << "Yes" : cout << "No";
 }
 using namespace std;
+int main(){
+    string s, t; cin >> s >> t;
+    int len = s.length();
+    for (int i = 0; i < len; i++).{
+        if (s[i] != t[len - i - 1]) {
+            cout << "NO";
+            return 0;
+        }
+    }
+    cout << "YES";
+}
+using namespace std;
+int main() {
+    string s, t;
+    cin >> s >> t;
+    reverse(t.begin(), t.end());
+    if (s == t)
+        cout << "YES";
+    else
+        cout << "NO";
+
+    return 0;
+}
+using namespace std;
 https://codeforces.com/contest/43/problem/B
 // 43B. Letter
 int main(){
@@ -1068,6 +1348,39 @@ int main(){
     }
     cout << win << endl;
 }
+using namespace std;
+int main(){
+    int n, max = 0; cin >> n;
+    string s;
+    map <string, int> mp;
+    for(int i = 0; i < n; i++){
+        cin >> s;
+        mp[s]++;
+    }
+    for (auto const &[key, val] : mp){
+        if (val > max){
+            max = val; s = key;
+        }
+    }
+    cout << s;
+}
+using namespace std;
+int main() {
+    int n; cin >> n;
+    unordered_map<string, int> mp;
+    string winner;
+    int maxCount = 0;
+    for (int i = 0; i < n; i++) {
+        string team; cin >> team;
+        mp[team]++;
+        if (mp[team] > maxCount) {
+            maxCount = mp[team];
+            winner = team;
+        }
+    }
+    cout << winner << '\n';
+    return 0;
+}
 https://codeforces.com/problemset/problem/46/A
 // A. Ball Game
 using namespace std;
@@ -1099,6 +1412,20 @@ int main() {
         cout << "NO" << endl;
 
     return 0;
+}
+using namespace std;
+bool isTriangular(int num){
+    if (num < 0)    return false;
+    int sum = 0;
+    for (int n = 1; sum <= num; n++){
+        sum = sum + n;
+        if (sum == num)    return true;
+    }
+    return false;
+}
+int main(){
+    int n; cin >> n;
+    cout << (isTriangular(n))? "YES" : "NO";
 }
 using namespace std;
 http://codeforces.com/contest/47/problem/B
@@ -1157,6 +1484,52 @@ int main() {
         cout << endl;
     }
 }
+using namespace std;
+int main(){
+	string s;
+	string a[3];
+	vector <string> ans;
+	for (int i = 0; i < 3; i++){
+		cin >> s;
+		a[i] = string(1, s[0]) + s[2];
+		if (s[1] == '>')
+			reverse(a[i].begin(), a[i].end());
+	}
+	for (int i = 0; i < 2; i++){
+		for (int j = i + 1; j < 3; j++){
+			if (a[i][0] == a[j][1])
+				ans.push_back(string(1, a[j][0]) + a[i]);
+			else if (a[i][1] == a[j][0])
+				ans.push_back(string(1, a[i][0]) + a[j]);
+		}
+	}
+	cout << (ans.size() > 1 ? "Impossible" : ans[0]);
+}
+using namespace std;
+int main() {
+    string a[3];
+    vector<string> ans;
+    for (int i = 0; i < 3; i++) {
+        string s; cin >> s;
+        a[i] = string(1, s[0]) + s[2];
+        if (s[1] == '>') {
+            reverse(a[i].begin(), a[i].end());
+        }
+    }
+    for (int i = 0; i < 2; i++) {
+        for (int j = i + 1; j < 3; j++) {
+            if (a[i][0] == a[j][1]) {
+                ans.push_back(string(1, a[j][0]) + a[i]);
+            } else if (a[i][1] == a[j][0]) {
+                ans.push_back(string(1, a[i][0]) + a[j]);
+            }
+        }
+    }
+    if (ans.size() != 1)
+        cout << "Impossible\n";
+    else
+        cout << ans[0] << '\n';
+}
 #include <iostream>
 #include <string>
 #include <cctype>
@@ -1192,6 +1565,21 @@ using namespace std;
 int main(){
     int m, n; cin >> m >> n;
     cout << (m * n) / 2;
+}
+https://codeforces.com/problemset/problem/53/A
+// A. Autocomplete
+using namespace std;
+int main(){
+	string s, str;
+	int n;
+	cin >> s >> n;
+	vector<string> v;
+	for (int i = 0; i < n; i++){
+		cin >> str;
+		if (str.find(s) == 0)
+			v.push_back(str);
+	}
+	cout << (v.size() > 0 ? *min_element(v.begin(), v.end()) : s);
 }
 http://codeforces.com/problemset/problem/58/A
 // Chat_room.cpp
@@ -1257,7 +1645,27 @@ int main() {
     }
     cout << (idx == target.size() ? "YES" : "NO") << endl;
 }
-
+using namespace std;
+int main(){
+    string s; cin >> s;
+    string h = "hello"; int c = 0;
+    for (int i = 0; i < s.length(); i++){
+        if (c == 5)    break;
+        if (s[i] == h[c])    c++;
+    }
+    (c == 5) ? cout << "YES" : cout << "NO";
+}
+using namespace std;
+int main() {
+    string s; cin >> s;
+    string h = "hello";
+    int c = 0;
+    for (char ch : s) {
+        if (c == (int)h.size()) break;
+        if (ch == h[c]) c++;
+    }
+    cout << (c == (int)h.size() ? "YES" : "NO") << "\n";
+}
 #include <iostream>
 https://codeforces.com/problemset/problem/58/B
 // B. Coins
@@ -1274,6 +1682,48 @@ int main() {
         }
     }
     cout << 1 << endl;
+}
+using namespace std;
+int main(){
+	int n; cin >> n;
+	while (n > 1){
+		cout << n << ' ';
+		for (int i = 2; i <= n; i++){
+			if (i * i > n){
+				n = 1;
+				break;
+			}
+			if (n % i == 0){
+				n /= i;
+				break;
+			}
+		}
+	}
+	cout << 1;
+}
+using namespace std;
+int main() {
+    int n; cin >> n;
+    while (n > 1) {
+        cout << n << ' ';
+        for (int i = 2; i * i <= n; i++) {
+            if (n % i == 0) {
+                n /= i;
+                break;
+            }
+            // If no divisor found till sqrt(n), n is prime
+            if (i * i > n) {
+                n = 1;  // to end the loop after printing n
+                break;
+            }
+        }
+        // If loop finishes without finding divisor and n > 1, n is prime
+        if (n > 1 && (int)sqrt(n) * (int)sqrt(n) < n) {
+            cout << n << ' ';
+            break;
+        }
+    }
+    cout << 1 << '\n';
 }
 
 using namespace std;
@@ -1321,6 +1771,39 @@ int main(){
     cout << s << endl;
 }
 using namespace std;
+int main(){
+    string s; cin >> s;
+    int len = s.length();
+    int count = 0;
+    for (int i = 0; i < len; i++){
+        if (isupper(s[i]))
+            count++;
+    }
+    if (count > (len / 2))
+        transform(s.begin(), s.end(), s.begin(), ::toupper);
+    else
+        transform(s.begin(), s.end(), s.begin(), ::tolower);
+
+    cout << s;
+    return 0;
+}
+using namespace std;
+int main() {
+    string s; cin >> s;
+    int len = s.length();
+    int uppercaseCount = 0;
+    for (char ch : s) {
+        if (isupper(ch))
+            uppercaseCount++;
+    }
+    if (uppercaseCount > len / 2)
+        transform(s.begin(), s.end(), s.begin(), ::toupper);
+    else
+        transform(s.begin(), s.end(), s.begin(), ::tolower);
+
+    cout << s << '\n';
+}
+using namespace std;
 http://codeforces.com/problemset/problem/61/A
 // Ultra-Fast Mathematician
 int main() {
@@ -1354,6 +1837,36 @@ int main(){
     cout << s1 << endl;
     return 0;
 }
+// Ultra-Fast Mathematician.
+#include <bits\stdc++.h>
+using namespace std;
+string xoring(string num1, string num2, int len){
+    string ans = "";
+    for (int i = 0; i < len; i++){
+        if (num1[i] == num2[i])    ans += "0";
+        else    ans += "1";
+    }
+    return ans;
+}
+int main(){
+    string num1, num2; cin >> num1 >> num2;
+    int len = num1.length();
+    cout << xoring(num1, num2, len);
+}
+#include <iostream>
+using namespace std;
+int main() {
+    string num1, num2;
+    cin >> num1 >> num2;
+    string result;
+    for (size_t i = 0; i < num1.size(); ++i) {
+        result += (num1[i] == num2[i]) ? '0' : '1';
+    }
+
+    cout << result << endl;
+    return 0;
+}
+
 https://codeforces.com/problemset/problem/63/A
 // A. Sinking Ship
 using namespace std;
