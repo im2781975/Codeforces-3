@@ -264,6 +264,29 @@ int main(){
     cout << answer;
     return 0;
 }
+https://codeforces.com/problemset/problem/9/B
+// B. Running Student
+using namespace std;
+int main() {
+    int n, vb, vs, xu, yu; cin >> n >> vb >> vs;
+    vector<int> a(n);
+    for(int i = 0; i < n; i++)
+        cin >> a[i];
+    cin >> xu >> yu; 
+    int optimal_index = 0;
+    double min_time = DBL_MAX ;
+    for (int i = 1; i < n; i++){
+        double bus_time = (double)a[i] / vb;
+        double run_time = sqrt(pow(xu - a[i], 2) + pow(yu, 2)) / vs;
+        double total_time = bus_time + run_time;
+		if (total_time <= min_time) {
+            min_time = total_time;
+            optimal_index = i;
+        }
+    }
+    cout << optimal_index + 1 << endl;
+    return 0;
+}
 #include <iostream>
 https://codeforces.com/problemset/problem/11/A
 // A. Increasing Sequence
@@ -1891,6 +1914,19 @@ int main(){
     else    cout << "No";
 }
 using namespace std;
+bool isPrime(int n){
+    for (int i = 2; i <= n / 2; i++)
+        if (n % i == 0)
+            return 0;
+    return 1;
+}
+int main(){
+    int a, b; cin >> a >> b;
+    for (int i = a + 1; i <= b; i++)
+    if (isPrime(i))    break;
+    cout << (i == b) ? "YES" : "NO";
+}
+using namespace std;
 const int N = 55;
 bool isNotPrime[N];
 void sieve() {
@@ -1985,8 +2021,108 @@ using namespace std;
 int main(){
     int n; cin >> n;
     cout << n + n / 2 << endl;
+	// cout << n * 3 / 2;
     return 0;
 }
+https://codeforces.com/problemset/problem/88/B
+// B. Keyboard
+using namespace std;
+double euclidean(pair<int, int> a, pair<int, int> b){
+	return sqrt(pow(a.first - b.first, 2) + pow(a.second - b.second, 2));
+}
+int main(){
+	map<char, vector<pair<int, int>>> mp;
+	map<char, bool> history;
+	vector<pair<int, int>> shifts;
+	int n, m, x, l, c = 0;
+	char chr;
+	string s;
+	scanf("%d%d%d", &n, &m, &x);
+	for (int i = 0; i < n * m; i++){
+		cin >> chr;
+		if (chr == 'S')
+			shifts.push_back(make_pair(i / m, i % m));
+		else
+			mp[chr].push_back(make_pair(i / m, i % m));
+	}
+	cin >> l;
+	cin >> s;
+	for (int i = 0; i < l; i++){
+		if (mp.find(tolower(s[i])) == mp.end() || (isupper(s[i]) && shifts.empty())){
+			cout << -1;
+			return 0;
+		}
+		if (isupper(s[i])){
+			if (history.find(s[i]) == history.end()){
+				vector<pair<int, int>> temp = mp[tolower(s[i])];
+				bool b = 1;
+				for (int q = 0; q < temp.size(); q++)
+					for (int j = 0; j < shifts.size(); j++){
+						if (euclidean(temp[q], shifts[j]) <= x){
+							b = 0;
+							break;
+						}
+						if (!b)
+							break;
+					}
+				if (b)
+					c++;
+				history[s[i]] = b;
+			}
+			else
+				c += history[s[i]];
+		}
+	}
+	cout << c;
+}
+using namespace std;
+double euclidean(pair<int, int> a, pair<int, int> b) {
+    return sqrt(pow(a.first - b.first, 2) + pow(a.second - b.second, 2));
+}
+int main() {
+    int n, m, x; cin >> n >> m >> x;
+    map<char, vector<pair<int, int>>> key_positions;
+    vector<pair<int, int>> shift_positions;
+    for (int i = 0; i < n * m; ++i) {
+        char ch; cin >> ch;
+        int row = i / m, col = i % m;
+        if (ch == 'S')
+            shift_positions.emplace_back(row, col);
+        else
+            key_positions[ch].emplace_back(row, col);
+    }
+    int l;
+    string s; cin >> l >> s;
+    map<char, bool> hard_to_reach_cache;
+    int result = 0;
+    for (char ch : s) {
+        char lower_ch = tolower(ch);
+        if (key_positions.find(lower_ch) == key_positions.end() || (isupper(ch) && shift_positions.empty())) {
+            cout << -1 << endl;
+            return 0;
+        }
+        if (isupper(ch)) {
+            if (hard_to_reach_cache.find(ch) == hard_to_reach_cache.end()) {
+                bool hard_to_reach = true;
+                for (const auto& key_pos : key_positions[lower_ch]) {
+                    for (const auto& shift_pos : shift_positions) {
+                        if (euclidean(key_pos, shift_pos) <= x) {
+                            hard_to_reach = false;
+                            break;
+                        }
+                    }
+                    if (!hard_to_reach) break;
+                }
+                hard_to_reach_cache[ch] = hard_to_reach;
+                result += hard_to_reach;
+            } else {
+                result += hard_to_reach_cache[ch];
+            }
+        }
+    }
+    cout << result << endl;
+}
+
 https://codeforces.com/problemset/problem/92/A
 // A. Chips
 using namespace std;
@@ -2012,7 +2148,27 @@ int main() {
     cout << m << endl;
     return 0;
 }
-
+https://codeforces.com/problemset/problem/92/B
+// B. Binary Number
+using namespace std;
+int main(){
+	string s; cin >> s;
+	int c = 0;
+	while (s.length() > 1){
+		c++;
+		if (s[s.length() - 1] == '0')    s.pop_back();
+		else{
+			int i = s.length() - 1;
+			while (i >= 0 && s[i] == '1'){
+				s[i] = '0';
+				i--;
+			}
+			if (i == -1)    s += '1';
+			else    s[i] = '1';
+		}
+	}
+	cout << c;
+}
 https://codeforces.com/problemset/problem/94/A
 // A. Restoring Password
 using namespace std;
@@ -2049,7 +2205,38 @@ int main(){
     }
     cout << endl;
 }
-
+using namespace std;
+int main(){
+	string s; cin >> s;
+	string n[10];
+	for (int i = 0; i < 10; i++)
+		cin >> n[i];
+	for (int i = 0; i < 80; i += 10){
+		for (int j = 0; j < 10; j++)
+			if (s.substr(i, 10) == n[j]){
+				cout << j;
+				break;
+			}
+	}
+}
+https://codeforces.com/problemset/problem/94/B
+// B. Friends
+using namespace std;
+int main() {
+    int n, x; cin >> n;
+    vector<int> counts(5, 0);
+    for (int i = 0; i < n * 2; ++i) {
+        cin >> x;
+        counts[x - 1]++;
+    }
+    for (int count : counts) {
+        if (count != 2) {
+            cout << "WIN" << endl;
+            return 0;
+        }
+    }
+    cout << "FAIL" << endl;
+}
 http://codeforces.com/problemset/problem/96/A
 // A. Football
 using namespace std;
@@ -2115,6 +2302,15 @@ int main() {
             count = 1;
     }
     cout << "NO" << endl;
+}
+// Football
+#include <bits\stdc++.h>
+using namespace std;
+int main(){
+  char s[110];
+  cin >> s;
+  cout << (strstr(s, "1111111") || strstr(s, "0000000") ? "YES" : "NO");
+  return 0;
 }
 #include <iostream>
 #include <string>
